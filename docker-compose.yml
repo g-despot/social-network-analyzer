@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  graph-embedding-evaluator:
+    build: .
+    image: gee
+    volumes:
+      - ./embeddings:/app/embeddings
+      - ./input:/app/input
+      - ./results:/app/results
