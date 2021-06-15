@@ -1,13 +1,6 @@
-# Graph Embedding Evaluator **(DRAFT VERSION)**
+# Social Netowrk Analyzer
 
-This app implements custom **Node2Vec** and **DeepWalk** algorithms which are evaluated on a link prediction problem. 
-After the embeddings are generated, a classifier is used for link prediction between two nodes. Model selection is 
-used to choose the best binary operator for combining pairs of node embeddings.
-
-An overview of the evaluator steps:
-1. Generate and save node embeddings for each node in the provided graph.
-2. Train the chosen classifier and find the best parameters.
-3. Evaluate the classifier on test data and save the results.
+This app implements custom **Node2Vec** and **DeepWalk** algorithms which are evaluated using link prediction and node classification tasks.
 
 ## Prerequisites
 
@@ -24,13 +17,27 @@ At this time, only these algorithms are supported for evaluation (including the 
 
 ## How to run the program
 
-To run a specific embedding algorithm with defined arguments:
-```bash
-python main.py --input facebook_pages.edgelist --output facebook_pages.txt --results facebook_pages.json --method deepwalk_custom --classifier logisticalregression
+Because of specific Python requirements for multiple packages it's advised to run the program using Docker Compose:
+
+```shell
+docker-compose build
+docker-compose up
 ```
 
-To start multiple embedding algorithms in a row with defined arguments edit and run the `start_evaluations.py` file:
-```bash
+To run a specific embedding algorithm with defined arguments:
+
+```shell
+python main.py --input facebook_pages.edgelist \
+               --output facebook_pages.txt
+               --results facebook_pages.json
+               --method deepwalk_custom
+               --classifier logisticalregression
+               --evaluation link-prediction
+```
+
+To start multiple embedding algorithms in a row with defined arguments edit and run the `start_evaluations.py` script:
+
+```shell
 python start_evaluations.py
 ```
 
@@ -52,31 +59,5 @@ python start_evaluations.py
 * `--weighted`: Denotes if the graph is weighted. Default: False
 * `--directed`: Denotes if the graph is directed. Default: False
 * `--iter`: Number of iterations (epochs) over the corpus. Default: 1
-* `--method`: The graph embedding algorithm and specific implementation. Choices: `node2vec_snap`, `node2vec_eliorc`, `node2vec_custom`, `deepwalk_phanein` and `deepwalk_custom`. **Argument required.**
-* `--classifier`: The classifier for link prediction evaluation. Choices: `logisticalregression`, `randomforest` and `gradientboost`. **Argument required.**
-
-## Generate the documentation
-
-You can generate the documentation for this project by running `make html` in the `/docs` directory. Make sure that you have the theme **sphinx-rtd-theme**  installed by running:
-
-```bash
-pip install sphinx_rtd_theme
-```
-
-<p align="left">
-  <img width="500" src="./docs/images/docs.png" alt="Documentation example">
-</p>
-
-## Evaluation results
-
-By running the `start_evaluations.py` script, you will get the following evaluation results in the `/results` directory.
-
-Evaluation results table:
-<p align="left">
-  <img width="600" src="./docs/images/evaluation_results_table.png" alt="Evaluation results table">
-</p>
-
-Evaluation results visual:
-<p align="left">
-  <img width="600" src="./docs/images/evaluation_results_visual.png" alt="Evaluation results visual">
-</p>
+* `--method`: The graph embedding algorithm and specific implementation. Choices: `node2vec_snap`, `node2vec_eliorc`, `node2vec_custom`,  `deepwalk_phanein` and `deepwalk_custom`. **Argument required.**
+* `--classifier`: The classifier for link prediction evaluation. Choices: `logisticalregression`,  `randomforest` and `gradientboost`. **Argument required.**

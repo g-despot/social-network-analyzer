@@ -1,19 +1,17 @@
 import csv
 import logging
-from typing import Callable
 import numpy as np
 import src.operators as operators
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.metrics import roc_auc_score, average_precision_score, accuracy_score, f1_score
+from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import GridSearchCV
+from typing import Callable
 
 
 logger = logging.getLogger('sna')
-
-# Evaluation process inspired by this guide: https://stellargraph.readthedocs.io/en/stable/demos/link-prediction/node2vec-link-prediction.html
 
 
 def edge_to_feature(edges: list,

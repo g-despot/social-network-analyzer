@@ -47,7 +47,7 @@ def propagation_step(graph: nx.classes.graph.Graph,
     Args:
         graph (networkx.classes.graph.Graph): The graph to be clustered.
         nodes (list): List of nodes.
-        labels (Dict): Dictionary with community labels as values and nodes as keys.
+        labels (Dict[int, int]): Dictionary with community labels as values and nodes as keys.
 
     Returns:
         (Dict): Dictionary with community labels as values and nodes as keys.
@@ -74,7 +74,7 @@ def detect(graph: nx.classes.graph.Graph,
         args (argparse.Namespace): The provided application arguments.
 
     Returns:
-        labels (Dict): Dictionary with community labels as values and nodes as keys.
+        number_of_communities (int): Number of communities in the graph.
     """
 
     nodes = []
@@ -87,6 +87,8 @@ def detect(graph: nx.classes.graph.Graph,
 
     for _ in range(args.iter):
         communities = propagation_step(graph, nodes, communities)
-    print(communities)
-    logger.info(
-        f'\nNumber of communities: {len(Counter(communities.values()).keys())}')
+
+    number_of_communities = len(Counter(communities.values()).keys())
+    logger.info(f'\nNumber of communities: {number_of_communities}')
+
+    return number_of_communities

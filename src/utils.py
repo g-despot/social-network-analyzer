@@ -177,3 +177,21 @@ def str2bool(argument: str) -> bool:
     else:
         raise argparse.ArgumentTypeError(
             'The argument must be a boolean value.')
+
+
+def calculate_node_degrees(G, adj_matrix):
+    """Calculate the degree of every node.
+
+    Args:
+        G (networkx.classes.graph.Graph): A NetworkX graph object.
+        adj_matrix (scipy.sparse): Graph adjacency matrix.
+
+    Returns:
+        degree_dict (networkx.classes.graph.Graph): A dictionary of node ids as keys and degrees as values.
+    """
+
+    degree_dict = {}
+    B = adj_matrix.sum(axis=1)
+    for cnt, node_id in enumerate(list(G.nodes())):
+        degree_dict[node_id] = B[cnt, 0]
+    return degree_dict

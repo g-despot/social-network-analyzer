@@ -1,35 +1,50 @@
 import logging
 import networkx as nx
+import src.utils as utils
 
 
 logger = logging.getLogger('sna')
 
 
-def get_modularity(G, degree_matrix, m):
-    New_A = nx.adj_matrix(G)
-    New_deg = calculate_degrees(New_A, G)
+def get_modularity(G, degree_dict, number_of_edges):
+    """Calculate the modularity.
+
+    Args:
+        G (networkx.classes.graph.Graph): A NetworkX graph object.
+        degree_dict (Dict): A dictionary of node ids as keys and degrees as values.
+        number_of_edges (int): Number of edges in the graph.
+
+    Returns:
+        Q (float): Graph modularity.
+    """
+
+    new_adj_matrix = nx.adj_matrix(G)
+    new_degree_dict = utils.calculate_node_degrees(G, new_adj_matrix)
     connected_components = nx.connected_components(G)
+
     Q = 0
     for component in connected_components:
         A = 0
         k = 0
         for node in component:
-            A += New_deg[node]
-            k += degree_matrix[node]
-        Q = Q + (float(A) - float(k*k)/float(2*m))
-    Q = Q/float(2*m)
+            A = A + new_degree_dict[node]
+            k = k + degree_dict[node]
+        Q = Q + (float(A) - float(k*k)/float(2*number_of_edges))
+    Q = Q/float(2*number_of_edges)
     return Q
 
 
-def calculate_degrees(adj_matrix, graph):
-    deg_dict = {}
-    B = adj_matrix.sum(axis=1)
-    for cnt, node_id in enumerate(list(graph.nodes())):
-        deg_dict[node_id] = B[cnt, 0]
-    return deg_dict
-
-
 def remove_edge(G, k):
+    """Calculate the modularity.
+
+    Args:
+        G (networkx.classes.graph.Graph): A NetworkX graph object.
+        k (int): Number of node samples to estimate betweenness.
+
+    Returns:
+        G (networkx.classes.graph.Graph): A NetworkX graph object.
+    """
+
     init_ncc = nx.number_connected_components(G)
     current_ncc = init_ncc
     while current_ncc <= init_ncc:
@@ -38,17 +53,28 @@ def remove_edge(G, k):
         for edge, value in betweenness_centralities.items():
             if value > max_centrality:
                 max_centrality = value
-        for  edge, value in betweenness_centralities.items():
+        for edge, value in betweenness_centralities.items():
             if value == max_centrality:
                 G.remove_edge(edge[0], edge[1])
         current_ncc = nx.number_connected_components(G)
     return G
 
 
-def detect(graph, args):
+def detect(graph_original, args):
+    """Perform the Girvan-Newman algorithm.
+
+    Args:
+        graph_original (networkx.classes.graph.Graph): A NetworkX graph object.
+        args (argparse.Namespace): The provided application arguments.
+
+    Returns:
+        number_of_communities (int): Number of communities in the graph.
+    """
+
+    graph = graph_original.copy()
     number_of_edges = nx.number_of_edges(graph)
     adj_matrix = nx.adj_matrix(graph)
-    degree_matrix = calculate_degrees(adj_matrix, graph)
+    degree_dict = utils.calculate_node_degrees(graph, adj_matrix)
 
     max_modularity = 0
     previous_m = None
@@ -56,7 +82,7 @@ def detect(graph, args):
     while True:
         graph = remove_edge(graph, args.k)
         modularity = get_modularity(
-            graph, degree_matrix, number_of_edges)
+            graph, degree_dict, number_of_edges)
         if previous_m != None and previous_m > modularity:
             m_converging = m_converging + 1
         if modularity > max_modularity:
@@ -65,5 +91,12 @@ def detect(graph, args):
         if graph.number_of_edges() == 0 or args.converging != None and m_converging > args.converging:
             break
 
-    logger.info(f'\nMax modularity: {max_modularity}')
-    logger.info(f'\nNumber of communities: {len(communities)}')
+    communities_dict = {}
+    for i, community in enumerate(communities):
+        for j in community:
+            communities_dict[j] = i
+
+    number_of_communities = len(communities)
+    logger.info(f'\nNumber of communities: {number_of_communities}')
+
+    return number_of_communities

@@ -16,7 +16,7 @@ def link_prediction_classifier(classifier: str) -> Pipeline:
     """Create the classifier.
 
     Args:
-        classifier (str): The classifier for link prediction evaluation.
+        classifier (str): The classifier for node classification evaluation.
 
     Returns:
         (sklearn.pipeline.Pipeline): Pipeline of transforms with a final estimator.
@@ -47,15 +47,15 @@ def link_prediction_classifier(classifier: str) -> Pipeline:
 def evaluate_model(clf: Pipeline,
                    X_test_nodes: np.ndarray,
                    y_test: np.ndarray) -> tuple:
-    """Calculate link prediction model scores.
+    """Calculate node classification model scores.
 
     Args:
-        classifier (str): The classifier for link prediction evaluation.
+        classifier (str): The classifier for node classification evaluation.
         X_train_nodes (np.ndarray): Testing data nodes.
         y_train (np.ndarray): Testing targets.
 
     Returns:
-        (tuple): Link prediction scores: accuracy.
+        (float): Node classification accuracy score.
     """
 
     X_test = X_test_nodes
@@ -75,15 +75,14 @@ def evaluate(classifier: str,
     """Evaluate the input data.
 
     Args:
-        classifier (str): The classifier for link prediction evaluation.
-        embedding (dict): Dictionary of embedding vectors.
+        classifier (str): The classifier for node classification evaluation.
         X_train_nodes (np.ndarray): Training data nodes.
         y_train (np.ndarray): Training targets.
         X_model_selection_nodes (np.ndarray): Model selection data nodes.
         y_model_selection (np.ndarray): Model selection targets.
 
     Returns:
-        results (list): Link prediction evaluation results.
+        results (Dict): Node classification evaluation results.
     """
 
     clf = link_prediction_classifier(classifier)
@@ -104,7 +103,7 @@ def save_evaluation_results(dataset: str,
                             classifier: str,
                             evaluation_results: tuple,
                             file_path: str) -> None:
-    """Save the link prediction evaluation results in JSON format.
+    """Save the node classification evaluation results in JSON format.
 
     Args:
         dataset (str): The name of the input dataset.

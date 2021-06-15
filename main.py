@@ -62,10 +62,12 @@ def parse_args() -> argparse.Namespace:
                                  'node2vec_eliorc',
                                  'node2vec_custom',
                                  'deepwalk_phanein',
-                                 'deepwalk_custom',
-                                 'label-propagation',
-                                 'girvan-newman'],
+                                 'deepwalk_custom'],
                         help='The graph embedding algorithm and specific implementation.')
+    parser.add_argument('--community-method', default='',
+                        choices=['label-propagation',
+                                 'girvan-newman'],
+                        help='The community detection method for calculating the number of clusters.')
     parser.add_argument('--classifier', default='',
                         choices=['logisticalregression',
                                  'randomforest',

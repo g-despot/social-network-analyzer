@@ -30,7 +30,11 @@ python .\main.py --input facebook/facebook.gpickle --output facebook/facebook_no
 python .\main.py --input facebook/facebook.gpickle --output facebook/facebook_node2vec_custom.embedding --results facebook/facebook_node2vec_custom_logisticalregression.csv --method node2vec_custom --classifier logisticalregression --embed true --node-ml-target ml_target
 python .\main.py --input facebook/facebook.gpickle --output facebook/facebook_deepwalk_phanein.embedding --results facebook/facebook_deepwalk_phanein_logisticalregression.csv --method deepwalk_phanein --classifier logisticalregression --embed true --node-ml-target ml_target
 python .\main.py --input facebook/facebook.gpickle --output facebook/facebook_deepwalk_custom.embedding --results facebook/facebook_deepwalk_custom_logisticalregression.csv --method deepwalk_custom --classifier logisticalregression --embed true --node-ml-target ml_target
+```
 
-python .\main.py --input amazon/amazon.gpickle --evaluation community-detection --method girvan-newman
-python .\main.py --input amazon/amazon.gpickle --evaluation community-detection --method label-propagation
+### Community detection
+
+```python
+python .\main.py --input amazon/amazon.gpickle --output amazon/amazon_node2vec_eliorc.embeddings --method node2vec_eliorc --evaluation community-detection --community-method girvan-newman --embed True --dimension 3
+python .\main.py --input amazon/amazon.gpickle --output amazon/amazon_node2vec_eliorc.embeddings --method node2vec_eliorc --evaluation community-detection --community-method label-propagation --embed True --dimension 3
 ```

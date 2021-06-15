@@ -1,14 +1,23 @@
-import src.utils as utils
-import src.link_prediction.link_prediction_evaluation as link_prediction_evaluation
-import src.embedding as embedding
 import logging
+import src.embedding as embedding
+import src.link_prediction.evaluation as evaluation
+import src.utils as utils
 import time
-from stellargraph.data import EdgeSplitter
 from sklearn.model_selection import train_test_split
+from stellargraph.data import EdgeSplitter
+
 
 logger = logging.getLogger('sna')
 
+
 def run(graph, args):
+    """Run link prediction on the graph.
+
+    Args:
+        graph (networkx.classes.graph.Graph): A NetworkX graph object.
+        args (argparse.Namespace): The provided application arguments.
+    """
+
     edge_splitter_test = EdgeSplitter(graph)
 
     graph_test, X_test_edges, y_test = edge_splitter_test.train_test_split(
@@ -34,12 +43,12 @@ def run(graph, args):
 
     logger.info(f'\nEmbedding evaluation started.')
     start = time.time()
-    results = link_prediction_evaluation.evaluate(args.classifier,
-                                                    embeddings,
-                                                    X_train_edges,
-                                                    y_train,
-                                                    X_model_selection_edges,
-                                                    y_model_selection)
+    results = evaluation.evaluate(args.classifier,
+                                  embeddings,
+                                  X_train_edges,
+                                  y_train,
+                                  X_model_selection_edges,
+                                  y_model_selection)
 
     time_diff = time.time() - start
     logger.info(
@@ -60,11 +69,11 @@ def run(graph, args):
 
     embedding_test = utils.load_embedding(args.output)
 
-    roc_auc, average_precision, accuracy, f1 = link_prediction_evaluation.evaluate_model(best_result["classifier"],
-                                                                                            embedding_test,
-                                                                                            best_result["binary_operator"],
-                                                                                            X_test_edges,
-                                                                                            y_test)
+    roc_auc, average_precision, accuracy, f1 = evaluation.evaluate_model(best_result["classifier"],
+                                                                         embedding_test,
+                                                                         best_result["binary_operator"],
+                                                                         X_test_edges,
+                                                                         y_test)
 
     logger.info(
         f"Scores on test set using '{best_result['binary_operator'].__name__}'.")
@@ -74,9 +83,9 @@ def run(graph, args):
     logger.info(f"f1_score on test set using: {f1}\n")
 
     if(args.results):
-        link_prediction_evaluation.save_evaluation_results(args.dataset,
-                                                            args.method,
-                                                            args.classifier,
-                                                            (roc_auc, average_precision,
-                                                            accuracy, f1),
-                                                            args.results)
+        evaluation.save_evaluation_results(args.dataset,
+                                           args.method,
+                                           args.classifier,
+                                           (roc_auc, average_precision,
+                                            accuracy, f1),
+                                           args.results)
