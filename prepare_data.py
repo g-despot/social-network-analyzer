@@ -22,26 +22,34 @@ def parse_args() -> argparse.Namespace:
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter,
                             conflict_handler='resolve')
 
-    parser.add_argument('--input-edges', default='git/git_edges.csv',
+    parser.add_argument('--input', default='',
+                        help='Graph input file in the /input directory.')
+    parser.add_argument('--input-edges', default='',
                         help='Graph input edges in the /input directory.')
-    parser.add_argument('--input-nodes', default='git/git_target.csv',
+    parser.add_argument('--input-nodes', default='',
                         help='Graph input nodes in the /input directory.')
-    parser.add_argument('--output', default='git/git.gpickle',
+    parser.add_argument('--output', default='',
                         help='File name to save the graph in the /input directory.')
     parser.add_argument('--column-one', default='id_1',
                         help='Name of the first edge id column.')
     parser.add_argument('--column-two', default='id_2',
                         help='Name of the second edge id column.')
-    parser.add_argument('--node-name', default='', help='Node name.')
-    parser.add_argument('--node-ml-target',
-                        default='ml_target',
+    parser.add_argument('--node-ml-target', default='ml_target',
                         help='Node machine learning target label.')
-    parser.add_argument('--format', default='adjacency-list',
-                        choices=['adjacency-list', 'nodes-edges'],
+    parser.add_argument('--format', default='', choices=['adjacency-list', 'nodes-edges'],
                         help='Format of the graph being transformed.')
+    parser.add_argument('--sample', type=utils.str2bool, nargs='?',
+                        const=True, default=False,
+                        help='Denotes if the graph should be sampled and saved.')
+    parser.add_argument('--sample-size', default=10000, type=int,
+                        help='Number of nodes to be sampled. (default: 10000)')
+    parser.add_argument('--transform', type=utils.str2bool, nargs='?',
+                        const=True, default=False,
+                        help='Denotes if the graph should be loaded and transformed.')
 
     args = parser.parse_args()
 
+    args.input = _here.parent.joinpath("input/" + args.input)
     args.input_edges = _here.parent.joinpath("input/" + args.input_edges)
     args.input_nodes = _here.parent.joinpath("input/" + args.input_nodes)
     args.output = _here.parent.joinpath("input/" + args.output)
@@ -54,19 +62,29 @@ def main():
 
     args = parse_args()
 
-    logger.info(f'\nTransformation started.')
-    start = time.time()
+    if args.transform:
+        logger.info(f'\nTransformation started.')
+        start = time.time()
 
-    if args.format == 'adjacency-list':
-        utils.transform_graph_from_adjacency_list(args)
+        if args.format == 'adjacency-list':
+            utils.transform_graph_from_adjacency_list(args)
 
-    if args.format == 'nodes-edges':
-        utils.transform_graph_from_multiple(args)
+        if args.format == 'nodes-edges':
+            utils.transform_graph_from_multiple_files(args)
 
-    time_diff = time.time() - start
-    logger.info(
-        f'\nTransformation finished in {time_diff:.2f} seconds.')
-    logger.info(f'\nGraph saved as {args.output}')
+        time_diff = time.time() - start
+        logger.info(
+            f'\nTransformation finished in {time_diff:.2f} seconds.')
+        logger.info(f'\nGraph saved as {args.output}')
+    if args.sample:
+        logger.info(f'\nSampling started.')
+        start = time.time()
+
+        utils.sample_graph(args)
+
+        time_diff = time.time() - start
+        logger.info(
+            f'\nSampling finished in {time_diff:.2f} seconds.')
 
 
 if __name__ == "__main__":

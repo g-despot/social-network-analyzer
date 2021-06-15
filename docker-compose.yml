@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  graph-embedding-evaluator:
+  social-network-analyzer:
     build: .
     image: gee
     volumes:

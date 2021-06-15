@@ -25,11 +25,11 @@ def parse_args() -> argparse.Namespace:
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter,
                             conflict_handler='resolve')
 
-    parser.add_argument('--input', default='facebook_pages.edgelist',
-                        help='Input graph in edge list format in the /input directory.')
-    parser.add_argument('--output', default='facebook_pages.txt',
+    parser.add_argument('--input', default='',
+                        help='Input graph in pickle byte stream format in the /input directory.')
+    parser.add_argument('--output', default='',
                         help='File name to save the graph embeddings in the /embeddings directory.')
-    parser.add_argument('--results', default='facebook_pages.csv',
+    parser.add_argument('--results', default='',
                         help='File name to save the evaluation results in the /results directory.')
     parser.add_argument('--dimensions', default=128, type=int,
                         help='Dimensionality of the word vectors. (default: 128)')
@@ -52,12 +52,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--window-size', default=10, type=int,
                         help='Maximum distance between the current and predicted word within a sentence. (default: 10)')
     parser.add_argument('--weighted', type=bool, default=False,
-                        help='Denotes if the graph is weighted. (default: False)')
+                        help='Denotes if the graph should be weighted. (default: False)')
     parser.add_argument('--directed', type=bool, default=False,
-                        help='Denotes if the graph is directed. (default: False)')
+                        help='Denotes if the graph should be directed. (default: False)')
     parser.add_argument('--iter', default=1, type=int,
                         help='Number of iterations (epochs) over the corpus.')
-    parser.add_argument('--method', default='node2vec_eliorc',
+    parser.add_argument('--method', default='',
                         choices=['node2vec_snap',
                                  'node2vec_eliorc',
                                  'node2vec_custom',
@@ -66,26 +66,26 @@ def parse_args() -> argparse.Namespace:
                                  'label-propagation',
                                  'girvan-newman'],
                         help='The graph embedding algorithm and specific implementation.')
-    parser.add_argument('--classifier', default='logisticalregression',
+    parser.add_argument('--classifier', default='',
                         choices=['logisticalregression',
                                  'randomforest',
                                  'gradientboost', ],
                         help='The classifier for evaluation.')
-    parser.add_argument('--evaluation', default='node-classification',
+    parser.add_argument('--evaluation', default='',
                         choices=['link-prediction',
                                  'node-classification',
                                  'community-detection'],
                         help='Social network analysis technique to be used.')
     parser.add_argument('--embed', type=utils.str2bool, nargs='?',
                         const=True, default=False,
-                        help='Denotes if the embedding should be calculated or loaded from an existing file.')
+                        help='Denotes if the embedding should be calculated or loaded from an existing file. (default: False)')
     parser.add_argument('--node-ml-target',
                         default='ml_target',
-                        help='The node ML target label.')
+                        help='The node target label for classification.')
     parser.add_argument('--k', default=None, type=int,
-                        help='Number of node samples to estimate betweenness. (default: None)')
+                        help='Number of node samples to estimate betweenness.')
     parser.add_argument('--converging', default=10, type=int,
-                        help='When to cut off the Girvan-Newman algorithm if modularity is decreasing. (default: 10)')
+                        help='Iteration when to cut off the Girvan-Newman algorithm if modularity is decreasing. (default: 10)')
     args = parser.parse_args()
 
     args.dataset = args.input
@@ -102,8 +102,9 @@ def main():
 
     args = parse_args()
 
-    #graph = utils.load_graph(args.weighted, args.directed, args.input)
-    graph = nx.karate_club_graph()
+    graph = utils.load_graph(args.weighted, args.directed, args.input)
+    #graph = nx.karate_club_graph()
+
     utils.print_graph_info(graph, "original graph")
 
     graph.remove_nodes_from(list(nx.isolates(graph)))

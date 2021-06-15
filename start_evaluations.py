@@ -1,10 +1,17 @@
 import os
 
-calculate_embedding = False
+calculate_embedding = True
+evaluation = 'link-prediction'
 
-io_files = [('git/git.gpickle',
-             'git/git_$1.embedding',
-             'git/git_$1_$2.csv')]
+"""
+('git/git.gpickle',
+ 'git/git_$1.embedding',
+ 'git/$1/git_$2_$3.csv')
+"""
+
+io_files = [('facebook/facebook.gpickle',
+             'facebook/facebook_$1.embedding',
+             'facebook/$1/facebook_$2_$3.csv')]
 
 methods = ['node2vec_snap',
            'node2vec_eliorc',
@@ -16,10 +23,14 @@ classifiers = ['logisticalregression',
                'randomforest',
                'gradientboost']
 
+evaluations = ['node-classification', 'link-prediction']
+
 for io_file in io_files:
-    for method in methods:
-        for classifier in classifiers:
-            os.system(f"python .\\main.py --input {io_file[0]} " +
-                      f"--output {io_file[1].replace('$1', method)}" +
-                      f"--results {io_file[2].replace('$1', method).replace('$2', classifier)} " +
-                      f"--method {method} --classifier {classifier} --embed {calculate_embedding}")
+    for evaluation in evaluations:
+        for method in methods:
+            for classifier in classifiers:
+                os.system(f"python .\\main.py --input {io_file[0]} " +
+                          f"--output {io_file[1].replace('$1', method)} " +
+                          f"--results {io_file[2].replace('$1', evaluation).replace('$2', method).replace('$3', classifier)} " +
+                          f"--method {method} --classifier {classifier} --embed {calculate_embedding} " +
+                          f"--evaluation {evaluation}")

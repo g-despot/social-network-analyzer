@@ -1,8 +1,6 @@
 import argparse
 import networkx as nx
-import os
 import pathlib
-import sys
 from gensim.models import Word2Vec
 from node2vec import Node2Vec
 from src.embedding_algorithms.custom.deepwalk import DeepWalk as CustomDeepWalk
@@ -97,12 +95,3 @@ def create_embedding(args: argparse.Namespace, G: nx.classes.graph.Graph) -> Non
 
     else:
         raise ValueError(f'Invalid embedding algorithm: {args.method}')
-    """
-    elif args.method == 'deepwalk_phanein':
-        Implementation: https://github.com/phanein/deepwalk.
-
-        os.system(f"deepwalk --format gpickle --input {args.input} " +
-                  f"--number-walks {args.num_walks} --representation-size {args.dimensions} " +
-                  f"--walk-length {args.walk_length} --window-size {args.window_size} " +
-                  f"--workers {args.workers} --seed {args.seed} --output {args.output}")
-    """

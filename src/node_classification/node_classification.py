@@ -31,9 +31,6 @@ def run(graph, args):
         X.append(embeddings[x])
         y.append(labels[int(x)])
 
-    #print(X[:5])
-    #print(y[:5])
-
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, train_size=0.75, test_size=0.25)
 

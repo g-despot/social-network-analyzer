@@ -3,6 +3,8 @@ import logging
 from typing import Dict
 import networkx as nx
 import pandas as pd
+from random import sample
+from tqdm import tqdm
 
 
 logger = logging.getLogger('sna')
@@ -33,7 +35,7 @@ def load_graph(is_weighted: bool, is_directed: bool, file_path: str) -> nx.class
     return G
 
 
-def transform_graph_from_multiple(args: argparse.Namespace) -> nx.classes.graph.Graph:
+def transform_graph_from_multiple_files(args: argparse.Namespace) -> nx.classes.graph.Graph:
     """Load the graph from multiple files and save it in pickle format to the input directory.
 
     Args:
@@ -47,11 +49,8 @@ def transform_graph_from_multiple(args: argparse.Namespace) -> nx.classes.graph.
     G = nx.from_pandas_edgelist(edges, args.column_one, args.column_two)
 
     nodes = pd.read_csv(args.input_nodes, sep=',')
-    #nx.set_node_attributes(G, pd.Series(nodes.name, index=nodes.id).to_dict(), args.node_name)
     nx.set_node_attributes(G, pd.Series(
         nodes.ml_target, index=nodes.id).to_dict(), args.node_ml_target)
-    #nx.set_node_attributes(G, pd.Series(nodes.views, index=nodes.id).to_dict(), 'views')
-    #nx.set_node_attributes(G, pd.Series(nodes.views, index=nodes.id).to_dict(), 'partner')
     nx.set_node_attributes(G, pd.Series(
         nodes.id, index=nodes.id).to_dict(), 'id')
 
@@ -72,6 +71,29 @@ def transform_graph_from_adjacency_list(args: argparse.Namespace) -> nx.classes.
 
     edges = pd.read_csv(args.input_edges, sep=',')
     G = nx.from_pandas_edgelist(edges, args.column_one, args.column_two)
+
+    nx.write_gpickle(G, args.output)
+
+    return G
+
+
+def sample_graph(args: argparse.Namespace) -> nx.classes.graph.Graph:
+    """Load the graph in pickle format, sample the new graph and save it to the input directory.
+
+    Args:
+        args (argparse.Namespace): The provided application arguments.
+
+    Returns:
+        G (networkx.classes.graph.Graph): A NetworkX graph object.
+    """
+
+    G = nx.read_gpickle(args.input)
+    H = G.copy()
+    samples = sample(list(G.nodes()), 10000)
+
+    for n in tqdm(H):
+        if n not in samples:
+            G.remove_node(n)
 
     nx.write_gpickle(G, args.output)
 

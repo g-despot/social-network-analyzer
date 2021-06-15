@@ -61,7 +61,7 @@ def propagation_step(graph: nx.classes.graph.Graph,
         pick = choose_neighbor(neighbors, communities)
         next_communities[node] = pick
 
-    return graph, nodes, next_communities
+    return next_communities
 
 
 def detect(graph: nx.classes.graph.Graph,
@@ -87,6 +87,6 @@ def detect(graph: nx.classes.graph.Graph,
 
     for _ in range(args.iter):
         communities = propagation_step(graph, nodes, communities)
-
+    print(communities)
     logger.info(
         f'\nNumber of communities: {len(Counter(communities.values()).keys())}')
