@@ -1,6 +1,6 @@
 # Social Netowrk Analyzer
 
-This app implements custom **Node2Vec** and **DeepWalk** algorithms which are evaluated using link prediction and node classification tasks.
+This app implements custom **Node2Vec** and **DeepWalk** algorithms which are evaluated using link prediction, node classification and community detection tasks.
 
 ## Prerequisites
 
@@ -27,12 +27,12 @@ docker-compose up
 To run a specific embedding algorithm with defined arguments:
 
 ```shell
-python main.py --input facebook_pages.edgelist \
-               --output facebook_pages.txt
-               --results facebook_pages.json
-               --method deepwalk_custom
-               --classifier logisticalregression
-               --evaluation link-prediction
+python main.py --input git/git.gpickle \
+               --output git/git.embedding \
+               --results git/link-prediction/git_deepwalk_custom_logisticalregression.csv \
+               --method deepwalk_custom \
+               --classifier logisticalregression \
+               --evaluation link-prediction \
 ```
 
 To start multiple embedding algorithms in a row with defined arguments edit and run the `start_evaluations.py` script:
@@ -60,4 +60,11 @@ python start_evaluations.py
 * `--directed`: Denotes if the graph is directed. Default: False
 * `--iter`: Number of iterations (epochs) over the corpus. Default: 1
 * `--method`: The graph embedding algorithm and specific implementation. Choices: `node2vec_snap`, `node2vec_eliorc`, `node2vec_custom`,  `deepwalk_phanein` and `deepwalk_custom`. **Argument required.**
-* `--classifier`: The classifier for link prediction evaluation. Choices: `logisticalregression`,  `randomforest` and `gradientboost`. **Argument required.**
+* `--community-method`: The community detection method for calculating the number of
+clusters. Choices: `label-propagation` and `girvan-newman`.
+* `--evaluation`: The social network analysis technique to be used.. Choices: `link`,  `randomforest` and `gradientboost`. **Argument required.**
+* `--classifier`: The classifier for evaluation. Choices: `logisticalregression`,  `randomforest` and `gradientboost`. **Argument required.**
+* `--embed`: Denotes if the embedding should be calculated or loaded from an existing file. Default: False
+* `--node-ml-target`: The node target label for classification. Default: 'ml_target'
+* `--k`: Number of node samples to estimate betweenness. Default: None
+* `--converging`: Iteration when to cut off the Girvan-Newman algorithm if modularity is decreasing. Default: 10
