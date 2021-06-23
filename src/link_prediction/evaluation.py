@@ -1,7 +1,7 @@
 import csv
 import logging
 import numpy as np
-import src.operators as operators
+import src.embedding_algorithms.operators as operators
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.metrics import roc_auc_score, average_precision_score, accuracy_score, f1_score

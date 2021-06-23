@@ -1,5 +1,5 @@
 import logging
-import src.embedding as embedding
+import src.embedding_algorithms.embedding as embedding
 import src.link_prediction.evaluation as evaluation
 import src.utils as utils
 import time
@@ -35,9 +35,8 @@ def run(graph, args):
     start = time.time()
 
     embedding.create_embedding(args, graph_train)
-    time_diff = time.time() - start
     logger.info(
-        f'\nEmbedding algorithm finished in {time_diff:.2f} seconds.')
+        f'\nEmbedding algorithm finished in {time.time() - start:.2f} seconds.')
 
     embeddings = utils.load_embedding(args.output)
 
@@ -50,9 +49,8 @@ def run(graph, args):
                                   X_model_selection_edges,
                                   y_model_selection)
 
-    time_diff = time.time() - start
     logger.info(
-        f'Embedding evaluation finished in {time_diff:.2f} seconds.')
+        f'Embedding evaluation finished in {time.time() - start:.2f} seconds.')
 
     best_result = max(results, key=lambda result: result["roc_auc"])
 
@@ -63,9 +61,8 @@ def run(graph, args):
     start = time.time()
 
     embedding.create_embedding(args, graph_test)
-    time_diff = time.time() - start
     logger.info(
-        f'\nEmbedding algorithm finished in {time_diff:.2f} seconds.')
+        f'\nEmbedding algorithm finished in {time.time() - start:.2f} seconds.')
 
     embedding_test = utils.load_embedding(args.output)
 

@@ -89,6 +89,4 @@ def detect(graph: nx.classes.graph.Graph,
         communities = propagation_step(graph, nodes, communities)
 
     number_of_communities = len(Counter(communities.values()).keys())
-    logger.info(f'\nNumber of communities: {number_of_communities}')
-
     return number_of_communities

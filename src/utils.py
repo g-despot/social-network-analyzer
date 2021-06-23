@@ -1,16 +1,21 @@
 import argparse
 import logging
-from typing import Dict
+import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
+import scipy
 from random import sample
+from sklearn.manifold import TSNE
 from tqdm import tqdm
+from typing import Dict
 
 
 logger = logging.getLogger('sna')
 
 
-def load_graph(is_weighted: bool, is_directed: bool, file_path: str) -> nx.classes.graph.Graph:
+def load_graph(is_weighted: bool,
+               is_directed: bool,
+               file_path: str) -> nx.classes.graph.Graph:
     """Load the graph from a file in the input directory.
 
     Args:
@@ -100,7 +105,8 @@ def sample_graph(args: argparse.Namespace) -> nx.classes.graph.Graph:
     return G
 
 
-def get_labels(G: nx.classes.graph.Graph, ml_target: str) -> Dict:
+def get_labels(G: nx.classes.graph.Graph,
+               ml_target: str) -> Dict:
     """Get the all the node labels from a graph with the ML target as dictionary values.
 
     Args:
@@ -117,7 +123,8 @@ def get_labels(G: nx.classes.graph.Graph, ml_target: str) -> Dict:
     return labels
 
 
-def print_graph_info(G: nx.classes.graph.Graph, graph_name: str) -> None:
+def print_graph_info(G: nx.classes.graph.Graph,
+                     graph_name: str) -> None:
     """Print information about the graph.
 
     Args:
@@ -179,7 +186,8 @@ def str2bool(argument: str) -> bool:
             'The argument must be a boolean value.')
 
 
-def calculate_node_degrees(G, adj_matrix):
+def calculate_node_degrees(G: nx.classes.graph.Graph,
+                           adj_matrix: scipy.sparse) -> Dict:
     """Calculate the degree of every node.
 
     Args:
@@ -195,3 +203,22 @@ def calculate_node_degrees(G, adj_matrix):
     for cnt, node_id in enumerate(list(G.nodes())):
         degree_dict[node_id] = B[cnt, 0]
     return degree_dict
+
+
+def visualize_embeddings(embeddings, node_targets):
+
+    tsne = TSNE(n_components=2)
+    node_embeddings_2d = tsne.fit_transform(embeddings)
+
+    alpha = 0.7
+    label_map = {l: i for i, l in enumerate(np.unique(node_targets))}
+    node_colours = [label_map[target] for target in node_targets]
+
+    plt.figure(figsize=(10, 8))
+    plt.scatter(
+        node_embeddings_2d[:, 0],
+        node_embeddings_2d[:, 1],
+        c=node_colours,
+        cmap="jet",
+        alpha=alpha,
+    )

@@ -5,49 +5,28 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
 
-   src.algorithms
+    src.community_detection
+    src.embedding_algorithms
+    src.link_prediction
+    src.node_classification
 
 Submodules
 ----------
-
-src.embedding module
---------------------
-
-.. automodule:: src.embedding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-src.evaluation module
----------------------
-
-.. automodule:: src.evaluation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-src.operators module
---------------------
-
-.. automodule:: src.operators
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 src.utils module
 ----------------
 
 .. automodule:: src.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
 
 .. automodule:: src
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:

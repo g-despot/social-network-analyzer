@@ -1,9 +1,7 @@
-graph_embedding
-===============
+src
+===
 
 .. toctree::
    :maxdepth: 4
 
-   main
    src
-   start_evaluations

@@ -1,15 +1,20 @@
+import argparse
 import logging
 import matplotlib.pyplot as plt
-import src.embedding as embedding
+import networkx as nx
+import src.embedding_algorithms.embedding as embedding
 import src.utils as utils
 import time
+from kneed import KneeLocator
 from sklearn.cluster import KMeans
 
 
 logger = logging.getLogger('sna')
 
 
-def detect(graph, number_of_communities, args):
+def detect(graph: nx.classes.graph.Graph,
+           number_of_communities: int,
+           args: argparse.Namespace) -> tuple:
     """Perform the k means clustering algorithm on the node embeddings.
 
     Args:
@@ -35,10 +40,10 @@ def detect(graph, number_of_communities, args):
 
     embeddings_list = list(embeddings_dict.values())
 
-    sse = []
-    offset_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+    sse_list = []
+    multipliers = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
                    0.7, 0.8, 0.9, 1.0, 1.2, 1.4, 1.6, 1.8]
-    for offset in offset_list:
+    for offset in multipliers:
         kmeans = KMeans(
             init="random",
             n_clusters=int(number_of_communities * offset),
@@ -47,18 +52,27 @@ def detect(graph, number_of_communities, args):
         )
 
         kmeans.fit(embeddings_list)
-        sse.append(kmeans.inertia_)
+        sse_list.append(kmeans.inertia_)
 
-        #logger.info(f'\nOffset: {offset}')
+        # Multiplier for calculating the adjusted number of clusters
+        logger.info(f'\nMultiplier: {offset}')
 
         # Sum of squared distances of samples to their closest cluster center
-        #logger.info(f'Inertia: {kmeans.inertia_}')
+        logger.info(f'Inertia: {kmeans.inertia_}')
 
         # Number of iterations required to converge
-        #logger.info(f'Iterations: {kmeans.n_iter_}')
+        logger.info(f'Iterations: {kmeans.n_iter_}')
 
-    plt.plot(offset_list, sse, label='Sum of the squared error')
-    plt.legend()
-    plt.xticks(offset_list)
-    plt.xlabel("Adjusted number of clusters")
-    plt.show()
+    kl = KneeLocator(
+        multipliers, sse_list, curve="convex", direction="decreasing"
+    )
+    logger.info(f'\nElbow point in the SSE curve: {kl.elbow}')
+
+    if args.visuals:
+        plt.plot(multipliers, sse_list, label='Sum of the squared error (SSE)')
+        plt.legend()
+        plt.xticks(multipliers)
+        plt.xlabel("Adjusted number of clusters")
+        plt.show()
+
+    return kl.elbow, multipliers

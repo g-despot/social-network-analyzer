@@ -65,8 +65,10 @@ def parse_args() -> argparse.Namespace:
                                  'deepwalk_custom'],
                         help='The graph embedding algorithm and specific implementation.')
     parser.add_argument('--community-method', default='',
-                        choices=['label-propagation',
-                                 'girvan-newman'],
+                        choices=['label_propagation_custom',
+                                 'girvan_newman_custom',
+                                 'label_propagation_nx',
+                                 'girvan_newman_nx'],
                         help='The community detection method for calculating the number of clusters.')
     parser.add_argument('--classifier', default='',
                         choices=['logisticalregression',
@@ -88,6 +90,9 @@ def parse_args() -> argparse.Namespace:
                         help='Number of node samples to estimate betweenness.')
     parser.add_argument('--converging', default=10, type=int,
                         help='Iteration when to cut off the Girvan-Newman algorithm if modularity is decreasing. (default: 10)')
+    parser.add_argument('--visuals', type=utils.str2bool, nargs='?',
+                        const=True, default=True,
+                        help='Denotes if the application should plot figures. (default: True)')
     args = parser.parse_args()
 
     args.dataset = args.input
@@ -124,7 +129,7 @@ def main():
         community_detection.run(graph, args)
 
     else:
-        raise ValueError(f'Invalid analysis method: {args.method}')
+        raise ValueError(f'Invalid evaluation method: {args.evaluation}')
 
 
 if __name__ == "__main__":

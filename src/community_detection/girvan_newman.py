@@ -97,6 +97,4 @@ def detect(graph_original, args):
             communities_dict[j] = i
 
     number_of_communities = len(communities)
-    logger.info(f'\nNumber of communities: {number_of_communities}')
-
     return number_of_communities

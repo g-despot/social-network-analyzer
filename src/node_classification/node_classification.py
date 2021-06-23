@@ -1,5 +1,5 @@
 import logging
-import src.embedding as embedding
+import src.embedding_algorithms.embedding as embedding
 import src.node_classification.evaluation as evaluation
 import src.utils as utils
 import time
@@ -22,9 +22,8 @@ def run(graph, args):
         start = time.time()
 
         embedding.create_embedding(args, graph)
-        time_diff = time.time() - start
         logger.info(
-            f'\nEmbedding algorithm finished in {time_diff:.2f} seconds.')
+            f'\nEmbedding algorithm finished in {time.time() - start:.2f} seconds.')
 
     embeddings = utils.load_embedding(args.output)
     logger.info(f'\nEmbedding loaded.')
@@ -36,6 +35,8 @@ def run(graph, args):
     for x in embeddings.keys():
         X.append(embeddings[x])
         y.append(labels[int(x)])
+
+    #utils.visualize_embeddings(embeddings, y)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, train_size=0.75, test_size=0.25)
@@ -49,9 +50,8 @@ def run(graph, args):
                                  X_test,
                                  y_test)
 
-    time_diff = time.time() - start
     logger.info(
-        f'Embedding evaluation finished in {time_diff:.2f} seconds.')
+        f'Embedding evaluation finished in {time.time() - start:.2f} seconds.')
 
     accuracy = evaluation.evaluate_model(result["classifier"],
                                          X_test,
