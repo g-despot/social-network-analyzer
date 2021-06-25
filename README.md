@@ -1,10 +1,15 @@
 
 # Social Network Analyzer
 
-![](https://img.shields.io/github/license/g-despot/social-network-analyzer)
+<p align="center">
+  <img width="460" src="./docs/images/sna-logo.png">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/github/license/g-despot/social-network-analyzer">
+</p>
 
 This is a simple network analysis app, created for the purpose of evaluating embedding algorithms, but can also be used to perform standard graph analysis techniques. Currently implemented algorithms and techniques:
-* Embedding algorithms:
+* **Embedding algorithms:**
   * node2vec
     * node2vec_custom
     * [node2vec_snap](https://github.com/aditya-grover/node2vec)
@@ -12,11 +17,11 @@ This is a simple network analysis app, created for the purpose of evaluating emb
   * DeepWalk
     * deepwalk_custom
     * [deepwalk_phanein](https://github.com/phanein/deepwalk)
-* Machine learning techniques:
+* **Machine learning techniques:**
   * Link prediction
   * Node classification
   * K-means clustering
-* Community detection
+* **Community detection:**
   * Girvan-Newman
   * Label propagation
 
