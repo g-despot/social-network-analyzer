@@ -38,9 +38,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--num-walks', default=32, type=int,
                         help='Number of walks from each node. (default: 32)')
     parser.add_argument('--p', default=2.0, type=float,
-                        help='Node2vec return parameter p. (default: 2)')
+                        help='The node2vec return parameter p. (default: 2)')
     parser.add_argument('--q', default=1.0, type=float,
-                        help='Node2vec in-out parameter q. (default: 1)')
+                        help='The node2vec in-out parameter q. (default: 1)')
     parser.add_argument('--workers', default=1, type=int,
                         help='Number of worker threads to train the model. (default: 1)')
     parser.add_argument('--seed', default=0, type=int,
