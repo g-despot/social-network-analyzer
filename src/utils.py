@@ -2,6 +2,7 @@ import argparse
 import logging
 import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 import pandas as pd
 import scipy
 from random import sample
@@ -206,19 +207,28 @@ def calculate_node_degrees(G: nx.classes.graph.Graph,
 
 
 def visualize_embeddings(embeddings, node_targets):
+    """Calculate the degree of every node.
+
+    Args:
+        G (networkx.classes.graph.Graph): A NetworkX graph object.
+        adj_matrix (scipy.sparse): Graph adjacency matrix.
+
+    Returns:
+        degree_dict (networkx.classes.graph.Graph): A dictionary of node ids as keys and degrees as values.
+    """
 
     tsne = TSNE(n_components=2)
-    node_embeddings_2d = tsne.fit_transform(embeddings)
+    two_dimensional_embeddings = tsne.fit_transform(embeddings)
 
-    alpha = 0.7
     label_map = {l: i for i, l in enumerate(np.unique(node_targets))}
-    node_colours = [label_map[target] for target in node_targets]
+    node_colors = [label_map[target] for target in node_targets]
 
-    plt.figure(figsize=(10, 8))
     plt.scatter(
-        node_embeddings_2d[:, 0],
-        node_embeddings_2d[:, 1],
-        c=node_colours,
+        two_dimensional_embeddings[:, 0],
+        two_dimensional_embeddings[:, 1],
+        c=node_colors,
         cmap="jet",
-        alpha=alpha,
+        alpha=0.7,
     )
+
+    plt.show()

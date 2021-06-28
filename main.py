@@ -110,7 +110,6 @@ def main():
     args = parse_args()
 
     graph = utils.load_graph(args.weighted, args.directed, args.input)
-    #graph = nx.karate_club_graph()
 
     utils.print_graph_info(graph, "original graph")
 
